@@ -56,8 +56,15 @@ def get_epgs_tvmao(channel, channel_id, dt, func_arg):
     ban = 0 #标识是否被BAN掉了
     today_dt = datetime.datetime.now()
     need_weekday = dt.weekday() + 1  # 需要获取周几的节目可以获取下周数据 w8 下周一 w9下周二
-    epg_url_part = 'http://m.tvmao.com/program/'
+    epg_url_part = 'https://www.tvmao.com/program/'
     url = '%s%s-w%s.html' % (epg_url_part, channel_id, need_weekday)
+    m = re.search(r'satellite-',channel_id)
+    if m is not None:
+        url = 'https://www.tvmao.com/program_satellite/{}-w{}.html'.format(channel_id.replace(m.group(0),''),need_weekday)
+    m = re.search(r'digital-',channel_id)
+    if m is not None:
+        url = 'https://www.tvmao.com/program_digital/{}-w{}.html'.format(channel_id.replace(m.group(0),''),need_weekday)
+    # print(url)
     try:
         nn,lis = 0,[]
         while len(lis) == 0:  # 如果没有返回上午节目重新抓取上午节目，防止tvmao不稳定
@@ -114,7 +121,7 @@ def get_epgs_tvmao(channel, channel_id, dt, func_arg):
         }
         res = requests.post(afternoon_url, headers=headers,data=data, timeout=30)
         lss = res.json()[1]
-        if res.json()[0] == -2:
+        if res.json()[0] == 0:
             msg = '^v^========被电视猫BAN掉了，等待 %s 秒！' % sleep_time
             #print(msg)
             time.sleep(sleep_time)
@@ -132,6 +139,9 @@ def get_epgs_tvmao(channel, channel_id, dt, func_arg):
         if isinstance(lss,str):
             soup = bs(lss, 'html.parser')  # 20201109以前为一段html,现在改为列表，然后再HTML
             lis1 = soup.select('li')
+            # print(len(lis1))
+            # if len(lis1) == 0:
+            # print(res.text,res.status_code)
             for tr in lis1:
                 if not tr.find('div'): #<li id="night">晚间节目</li> 里面有这种的跳过
                     continue
@@ -150,7 +160,7 @@ def get_epgs_tvmao(channel, channel_id, dt, func_arg):
                        'title': title,
                        'desc': '',
                        'program_date': dt,
-                       'super_id': channel.super_id,
+                    #    'super_id': channel.super_id,
                        }
                 epgs.append(epg)
         else:
@@ -274,7 +284,7 @@ def get_channels_tvmao():
             name = tr1['title']
             href = tr1['href']
             id = href.replace('/program/','').replace('/','-').replace('.html','').replace('-program_','')
-            id = re.sub('-w\d$','',id)
+            id = re.sub(r'-w\d$','',id)
             res1 = tr1['res']
             channel = {
                 'name': name,
