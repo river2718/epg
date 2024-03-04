@@ -1,0 +1,9 @@
+#EXTM3U
+#EXTINF:-1 tvg-logo="https://river2718.github.io/logos/CCTV1.png" tvg-id="1" tvg-name="CCTV1" group-title="央视",CCTV-1 综合
+http://192.168.2.1:1111/1.ts
+#EXTINF:-1 tvg-logo="https://river2718.github.io/logos/CCTV3.png" tvg-id="2" tvg-name="CCTV3" group-title="央视",CCTV-3 综艺
+http://192.168.2.1:1111/2.ts
+#EXTINF:-1 tvg-logo="https://river2718.github.io/logos/CCTV2.png" tvg-id="3" tvg-name="CCTV2" group-title="央视",CCTV-2 经济
+http://192.168.2.1:1111/3.ts
+#EXTINF:-1 tvg-logo="https://river2718.github.io/logos/求索科学png" tvg-id="4" tvg-name="求索科学" group-title="地方台",求索科学
+http://192.168.2.1:1111/4.ts

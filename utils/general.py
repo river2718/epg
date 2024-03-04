@@ -9,8 +9,8 @@ add_info_title = '' #在节目表的描述里面添加信息
 BASE_DIR = Path(__file__).resolve().parent.parent
 root_dir = os.path.join(BASE_DIR,'download')
 crawl_info = {
-        'max_crawl_days': 2 ,    #需要采集几天节目  1为当天，2为今明两天 如果频道为多天一次获取，则不受此限制
-        'gen_xml_days': 2,   #需要生成节目表的天数 1当天 2明天  不能大于need_days,否则出错
+        'max_crawl_days': 7,    #需要采集几天节目  1为当天，2为今明两天 如果频道为多天一次获取，则不受此限制
+        'gen_xml_days': 10,   #需要生成节目表的天数 1当天 2明天  不能大于need_days,否则出错
         'del_days' : 14 ,     #删除多少天之前的节目
         'recrawl_days' : 1 ,  #需要重新采集几天的节目，1为只重新采集当天节目
         'retry_crawl_times' : 1 ,        #如果采集出错，重试次数 1为不重试，2为重试一次 3....重试两次
@@ -59,7 +59,7 @@ def cht_to_chs(line):
     line = Converter('zh-hans').convert(line)
     line.encode('utf-8')
     return line
- #将多个频道ID解析为单个ID 解析为 {'tvmao':'cctv1','cctv':'cctv1'....}
+#将多个频道ID解析为单个ID 解析为 {'tvmao':'cctv1','cctv':'cctv1'....}
 def channel_ids_to_dict(channel_id):
     channel_list = {}
     rs = re.findall('<(\w+):(.+?)>',channel_id)

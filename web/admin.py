@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import Channel,Epg,Crawl_log,Channel_list
-admin.site.site_header = '老张的EPG--频道配置'
-admin.site.site_title = "老张的EPG"
+admin.site.site_header = '我的EPG--频道配置'
+admin.site.site_title = "我的EPG"
 admin.site.index_title = "后台首页"
 # Register your models here.
 class ChannelAdmin(admin.ModelAdmin):
@@ -29,4 +29,5 @@ class Channel_listAdmin(admin.ModelAdmin):
     list_display = ('inner_channel_id','inner_name','out_channel_id','out_name','source')
     list_filter =('source',) #过滤器
     list_display_links = ('inner_name','out_name')
+    search_fields = ('inner_name','out_name')
 admin.site.register(Channel_list,Channel_listAdmin)

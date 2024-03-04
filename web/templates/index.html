@@ -10,7 +10,7 @@
 <script src="{% static "/js/jquery.lazyload.min.js" %}"></script>
 <script src="{% static "/js/popper/1.14.7/popper.min.js" %}"  crossorigin="anonymous"></script>
 <script src="{% static "/js/bootstrap/4.3.1/bootstrap.min.js" %}"  crossorigin="anonymous"></script>
-<title>老张的EPG Since 2019</title>
+<title>我的EPG</title>
 </head>
 <body>
 <!-- Optional JavaScript -->
@@ -22,7 +22,8 @@
 
 </script>
 <div class="container bg-light">
-    <h1>老张的EPG</h1>
+    <h1>我的EPG</h1>
+    <p>管理页:<a href="admin">登陆</a></p>
     <p>节目表下载地址：<a href="download/e.xml">XML地址</a></p>
     <p>下载测试m3u文件:<a href="download/test.m3u">测试</a></p>
     <p>EPG文件中提供{{ channel_no }}个频道 {{ crawl_day }}天内节目表共 {{ epg_no }} 条，<br/>现在提供时间为： {{ start_date }}  -  {{ end_date }} </p>
@@ -40,36 +41,38 @@
             </tr>
             </thead>
             <tbody >
-            <tr>
+            <!-- <tr>
                 <th></th>
                 <td><a href="#"><img src="#" alt="" height="30"></a></td>
-                <td>需要显示:暂未提供节目表 的频道</td>
+                <td>需要显示:暂未提供节目表的频道</td>
                 <td>noepg</td>
                 <td>9999</td>
                 <td>所有</td>
                 <td>没有</td>
                 <td>七天内</td>
-            </tr>
+            </tr> -->
             {% for channel in channels %}
             <tr>
-                    <th>{{ forloop.counter }}</th>
-                    <td><a href="{{ channel.logo }}"><img class="lazy" data-original="{{ channel.logo }}" alt="{{ channel.tvg_name }}" height="30"></a></td>
-                    <td><a href="/api/web/?ch={{ channel.tvg_name }}&date={{ start_date_no }}">{{ channel.name }}</a></td>
-                    <td>{{ channel.tvg_name }}</td>
-                    <td>{{ channel.id }}</td>
-                    <td>{{ channel.sort }}</td>
-                    <td>{{ channel.source }}</td>
-                    <td>{{ channel.last_program_date }}</td>
-                </tr>
+                <th>{{ forloop.counter }}</th>
+                <td><a href="{{ channel.logo }}"><img class="lazy" data-original="{{ channel.logo }}" alt="{{ channel.tvg_name }}" height="30"></a></td>
+                <td><a href="/api/web/?ch={{ channel.tvg_name }}&date={{ start_date_no }}">{{ channel.name }}</a></td>
+                <td>{{ channel.tvg_name }}</td>
+                <td>{{ channel.id }}</td>
+                <td>{{ channel.sort }}</td>
+                <td>{{ channel.source }}</td>
+                <td>{{ channel.last_program_date }}</td>
+            </tr>
             {% endfor %}
-
             </tbody>
         </table>
   </div>
   </body>
 <footer class="footer">
 <ul class="list-inline text-center">
-    <em>&nbsp&nbsp请注明来源：<a href="http://epg.51zmt.top:8000">老张的EPG</a></em>&nbsp&nbsp<em><a href="https://github.com/supzhang/epg">源码分享</a></em></ul></footer>
+    <p>原作者：<a href="https://github.com/supzhang/epg">supzhang</a><p>
+    <p>修改：<a href="https://github.com/river2718/epg">river2718</a></p>
+</ul>
+</footer>
 </html>
 
 

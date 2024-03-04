@@ -184,10 +184,12 @@ def gen_xml(sort):
     get_days = crawl_info['gen_xml_days']
     xmldir = '%s/%s'%(dirs['share'],xmlinfo[sort]['basename'])
     tz = ' +0800'
-    need_date = datetime.datetime.now().date() + datetime.timedelta(days = get_days)
+    need_date = datetime.datetime.now().date() + datetime.timedelta(days = get_days)-datetime.timedelta(days=1)
     channels = Channel.get_need_channels(Channel,xmlinfo[sort]['sortname'])
     epgs = Epg.get_epgs(Epg,channels[1],need_date)
     log('crawl-gen_xml共有：%s 个频道,%s条信息需要生成'%(channels[1].count(),epgs.count()))
+    if not os.path.exists(os.path.dirname(xmldir)):
+        os.makedirs(os.path.dirname(xmldir))
     f = open(xmldir,'w',encoding='utf-8')
     f.write(xmlhead)
     for channel in channels[0]:
@@ -195,8 +197,8 @@ def gen_xml(sort):
             continue
         c = '<channel id="%s"><display-name lang="zh">%s</display-name></channel>'%(channel.id,channel.tvg_name)
         f.write(c)
-    noepg_channel = '<channel id="9999"><display-name lang="zh">noepg</display-name></channel>'
-    f.write(noepg_channel)
+    # noepg_channel = '<channel id="9999"><display-name lang="zh">noepg</display-name></channel>'
+    # f.write(noepg_channel)
     for epg in epgs:
         start = epg.starttime.astimezone(tz=tz_sh).strftime('%Y%m%d%H%M%S') + tz
         end = epg.endtime.astimezone(tz=tz_sh).strftime('%Y%m%d%H%M%S') + tz
@@ -207,9 +209,9 @@ def gen_xml(sort):
         desc = desc.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;').replace("'",'&apos;').replace('"','&quot;')
         programinfo = '''<programme start="%s" stop="%s" channel="%s"><title lang="zh">%s</title><desc lang="zh">%s</desc></programme>'''%(start,end,id,title,desc)
         f.write(programinfo)
-    for x in range(10):
-        noepg_program_day = noepg('noepg','9999',(datetime.datetime.now().date() + datetime.timedelta(days=x-5)))
-        f.write(noepg_program_day)
+    # for x in range(10):
+    #     noepg_program_day = noepg('noepg','9999',(datetime.datetime.now().date() + datetime.timedelta(days=x-5)))
+    #     f.write(noepg_program_day)
     f.write(xmlbottom)
     f.close()
     log('crawl-gen_xml 已经生成:%s 分类xml文件：%s'%(xmlinfo[sort]['sortname'],xmldir))
