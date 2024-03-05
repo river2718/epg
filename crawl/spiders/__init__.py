@@ -44,25 +44,25 @@ epg_funcs = {
             }  #所有EPG的接口
 epg_source = {
                 'tvmao':get_channels_tvmao,
-                # 'tbc':get_channels_tbc,
-                # 'cctv':get_channels_cctv,
-                # 'zhongshu':get_channels_zhongshu,
-                # 'cabletv':get_channels_cabletv,
-                # 'tvsou':get_channels_tvsou,
-                # '4gtv':get_channels_4gtv,
-                # 'mod':get_channels_mod,
-                # 'tvb':get_channels_tvb,
-                # 'nowtv':get_channels_nowtv,
-                # 'icable':get_channels_icable,
-                # 'gdtv':get_channels_gdtv,
-                # 'btv':get_channels_btv,
-                # 'hks':get_channels_hks,
-                # 'viu':get_channels_viu,
-                # 'chuanliu':get_channels_chuanliu,
-                # 'mytvsuper':get_channels_mytvsuper,
-                # 'gxntv':get_channels_gxntv,
-                # 'sdtv':get_channels_sdtv,
-        }
+                'tbc':get_channels_tbc,
+                'cctv':get_channels_cctv,
+                'zhongshu':get_channels_zhongshu,
+                'cabletv':get_channels_cabletv,
+                'tvsou':get_channels_tvsou,
+                '4gtv':get_channels_4gtv,
+                'mod':get_channels_mod,
+                'tvb':get_channels_tvb,
+                'nowtv':get_channels_nowtv,
+                'icable':get_channels_icable,
+                'gdtv':get_channels_gdtv,
+                'btv':get_channels_btv,
+                'hks':get_channels_hks,
+                'viu':get_channels_viu,
+                'chuanliu':get_channels_chuanliu,
+                'mytvsuper':get_channels_mytvsuper,
+                'gxntv':get_channels_gxntv,
+                'sdtv':get_channels_sdtv,
+            }
 func_args = {
                 'tvmao':0,
                 'tbc':0,
@@ -84,6 +84,7 @@ func_args = {
                 'gxntv':0,
                 'sdtv':0,
             }
+
 def epg_func(channel,id,dt,func_arg=0,source = 0):
     if source:
         source1 = source
@@ -114,10 +115,4 @@ __all__ = ['get_epgs_4gtv',
             'epg_funcs',
            'func_args',
            'epg_func',
-           
            ]
-
-
-
-
-
