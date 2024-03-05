@@ -26,8 +26,8 @@ class Crawl_logAdmin(admin.ModelAdmin):
     list_display = ('dt', 'msg', 'level')
 admin.site.register(Crawl_log,Crawl_logAdmin)
 class Channel_listAdmin(admin.ModelAdmin):
-    list_display = ('inner_channel_id','inner_name','out_channel_id','out_name','source')
+    list_display = ('out_name','out_channel_id','source')
     list_filter =('source',) #过滤器
-    list_display_links = ('inner_name','out_name')
-    search_fields = ('inner_name','out_name')
+    list_display_links = ('out_name',)
+    search_fields = ('out_name',)
 admin.site.register(Channel_list,Channel_listAdmin)

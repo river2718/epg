@@ -19,7 +19,7 @@ def crawl():
                 channels = epg_source[source]()
                 for channel in channels:#转简体
                     channel['name'] = cht_to_chs(channel['name'])
-                save_ret = Channel_list.save_to_db(Channel_list,channels)
+                save_ret = Channel_list.save_to_db(channels)
                 msg = '频道整理--来源:%s,频道数量:%s,%s'%(source,len(channels),save_ret['msg'])
             except Exception as e:
                 msg = '频道整理--来源:%s,获取错误:%s'%(source,e)

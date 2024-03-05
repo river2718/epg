@@ -249,29 +249,29 @@ class Channel_list(models.Model):
         (0, '否'),
         (1, '是')
     )
-    inner_channel_id = models.IntegerField('内部id',default=99999,db_index = True)
     out_channel_id = models.CharField('来源网站上的id',max_length=100)
-    inner_name = models.CharField('内部tvg-name',max_length=20)
     out_name = models.CharField('来源网站上的名称',max_length=20)
     source = models.CharField('来源网站',max_length=20)
     is_alive = models.IntegerField('来源网站上是否仍然存在',choices = is_alive_choice,default = 1)
     create_date = models.DateField('加入日期',auto_now_add = True)
-    update_date = models.DateField('更新日期',auto_now_add=True)
+    update_date = models.DateField('更新日期',auto_now = True)
     #del_date = models.DateField('来源网站取消日期',auto_now_add=True)
     def __str__(self):
-        return '%s-%s-%s' % (self.inner_channel_id,self.inner_name,self.out_name)
+        return '%s' % (self.out_name)
     class Meta:
         verbose_name = "频道来源整理表"
         verbose_name_plural = "频道来源整理表"
-    def save_to_db(self,channels):
+        unique_together = ['source','out_name']
+    
+    @classmethod
+    def save_to_db(cls,channels):
         msg = 'Channel_list save success!'
         success = 1
-        old_channels_same_source = self.objects.filter(source = channels[0]['source'])
+        old_channels_same_source = cls.objects.filter(source = channels[0]['source'])
         querylist = []
         new_no = 0  #新增加
         update_no = 0 #更新的
         not_alive_no = 0 #已经失效的
-        dt_now = datetime.datetime.now().date()
         is_alive_list = []
         for channel in channels:
             try:
@@ -279,20 +279,22 @@ class Channel_list(models.Model):
                     #原来已经保存过
                     if channel_old.out_name == channel['name']:
                         channel_old.out_channel_id = ','.join(channel['id'])
-                        channel_old.update_date = dt_now
+                        channel_old.is_alive = 1
                         channel_old.save()
                         is_alive_list.append(channel_old)
                         update_no += 1
                         break
-                else:#新数据
-                    querye = Channel_list(inner_channel_id=0,
-                                          out_channel_id=','.join(channel['id']),
-                                          inner_name='',
-                                          out_name=channel['name'],
-                                          source=channel['source'],
-                                          is_alive=True,
-                                          create_date=dt_now,
-                                          update_date=dt_now)
+                #新数据
+                querye,created = Channel_list.objects.get_or_create(
+                                    out_name=channel['name'],
+                                    source=channel['source'],
+                                    defaults={'out_channel_id':','.join(channel['id']),
+                                                'is_alive':1})
+                if not created:
+                    if querye.out_channel_id != ','.join(channel['id']):
+                        raise Exception('Source "{}" has channel "{}" with different ids "{}".'\
+                                        .format(channel['source'],channel['name'],','.join(channel['id'])))
+                else:
                     new_no += 1
                     querylist.append(querye)
             except Exception as e:
@@ -302,14 +304,14 @@ class Channel_list(models.Model):
         #已经从官网剔除的标记IS_ALIVE false
         for old_channel in old_channels_same_source:
             if old_channel not in is_alive_list:
-                old_channel.is_alive = False
+                old_channel.is_alive = 0
                 old_channel.save()
                 not_alive_no += 1
-        try:
-            ret = self.objects.bulk_create(querylist)
-        except Exception as e:
-            success = 0
-            msg = 'web-models-channel_list-save_to_dbs bulk_create2： %s' % (e)
+        # try:
+        #     ret = cls.objects.bulk_create(querylist)
+        # except Exception as e:
+        #     success = 0
+        #     msg = 'web-models-channel_list-save_to_dbs bulk_create2： %s' % (e)
         msg = '新增:%s,更新:%s,失效:%s,%s'%(new_no,update_no,not_alive_no,msg)
         ret = {
             'success':success,
