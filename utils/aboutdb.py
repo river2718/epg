@@ -17,8 +17,10 @@ def log(msg,level = 1): #写日志 1正常 2错误
 获取生成HTML时需要的信息，频道列表、EPG统计
 '''
 def get_html_info(need_date):
-    channels = Channel.get_need_channels(Channel,'all')
-    epgs = Epg.get_epgs(Epg, channels[1], need_date)
+    # channels = Channel.get_need_channels(Channel,'all')
+    channels = Channel.objects.all()
+    channels = [channels,channels.values_list('id')]
+    epgs = Epg.get_epgs(channels[1], need_date)
     epg_no = epgs.count()
     return ({
         'epg_no':epg_no,

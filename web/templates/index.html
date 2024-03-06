@@ -33,8 +33,8 @@
                 <th scope="col">#</th>
                 <th scope="col"></th>
                 <th scope="col">频道</th>
-                <th scope="col">tvg-name</th>
                 <th scope="col">tvg-id</th>
+                <th scope="col">tvg-name</th>
                 <th scope="col">分类</th>
                 <th scope="col">来源</th>
                 <th scope="col">最新节目日期</th>
@@ -56,8 +56,8 @@
                 <th>{{ forloop.counter }}</th>
                 <td><a href="{{ channel.logo }}"><img class="lazy" data-original="{{ channel.logo }}" alt="{{ channel.tvg_name }}" height="30"></a></td>
                 <td><a href="/api/web/?ch={{ channel.tvg_name }}&date={{ start_date_no }}">{{ channel.name }}</a></td>
+                <td>{{ channel.tvg_id }}</td>
                 <td>{{ channel.tvg_name }}</td>
-                <td>{{ channel.id }}</td>
                 <td>{{ channel.sort }}</td>
                 <td>{{ channel.source }}</td>
                 <td>{{ channel.last_program_date }}</td>

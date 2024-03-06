@@ -109,7 +109,7 @@ def single_channel_epg(request):
         else:
             channel = channels.first()
             channel_name = channel.name
-            epgs = Epg.get_single_epg(Epg,channel,need_date)
+            epgs = Epg.get_single_epg(channel,need_date)
             source = channel.source
 
 

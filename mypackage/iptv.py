@@ -1,6 +1,6 @@
 import re
 
-class channel:
+class Channel:
     def __init__(self,id,name,logo,group,catchup,catchup_source,catchup_days,name_display,url):
         self.id = id
         self.name = name
@@ -15,9 +15,9 @@ class channel:
         return "{},{},{},{},{},{},{},{},{}".format(self.id,self.name,self.logo,self.group,self.catchup,self.catchup_source,self.catchup_days,self.name_display,self.url)
     
 class IptvList:
-    def __init__(self):
-        self.header = ''
-        self.channels = []
+    def __init__(self,header='',channels=[]):
+        self.header = header
+        self.channels = channels
     def loadf(self,filepath):
         self.channels = []
         with open(filepath,'r',encoding='utf8') as f:
@@ -45,7 +45,7 @@ class IptvList:
                     m = re.search(r',([^,]*$)',fileline)
                     ch_name_display = m.group(1).strip(' ') if m else ""
                     ch_url = f.readline().strip(' \n')
-                    self.channels.append(channel(ch_id,ch_name,ch_logo,ch_group,ch_catchup,ch_catchup_source,ch_catchup_days,ch_name_display,ch_url))
+                    self.channels.append(Channel(ch_id,ch_name,ch_logo,ch_group,ch_catchup,ch_catchup_source,ch_catchup_days,ch_name_display,ch_url))
                 fileline = f.readline()
     
     def dump(self,filepath):

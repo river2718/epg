@@ -5,6 +5,10 @@ from dateutil import tz
 from utils.general import cht_to_chs, add_info_desc, add_info_title
 import datetime
 from django.utils import timezone
+from mypackage.iptv import Channel as Chan, IptvList
+import os
+from lxml import etree
+
 tz_sh = tz.gettz('Asia/Shanghai')
 class Channel(models.Model):
     source_choices = [
@@ -33,45 +37,54 @@ class Channel(models.Model):
         (1,'是'),
         (0,'否')
     ]
-    channel_id = models.CharField('频道来源网站ID', max_length=300)
-    tvg_name = models.CharField('匹配用的tvg-name', null=False, max_length=100, db_index=True)
-    name = models.CharField('频道显示名称', null=False, max_length=100, db_index=True)
-    sort = models.CharField('频道分类', null=False, max_length=50, db_index=True)  # 1，2，3，4，5
-    logo = models.CharField('台标地址', max_length=400, null=True)
-    last_program_date = models.DateField('最新节目日期', db_index=True, null=True)
+    name = models.CharField('显示名称', null=False, max_length=100, db_index=True)
+    channel_id = models.CharField('来源网站ID', max_length=300, blank=True)
+    tvg_id = models.CharField('tvg-id',max_length=50,blank=True)
+    tvg_name = models.CharField('tvg-name', null=False, max_length=100, db_index=True)
+    catchup = models.CharField('回看模式', max_length=50, blank=True)
+    catchup_source = models.CharField('回看地址', max_length=50, blank=True)
+    catchup_days = models.PositiveIntegerField('回看天数', null=True, blank=True)
+    live_url = models.URLField('直播地址', null=True, blank=True)
+    sort = models.CharField('分类', null=False, max_length=50, db_index=True)  # 1，2，3，4，5
+    # logo = models.CharField('台标地址', max_length=400, null=True)
+    logo = models.URLField('台标地址', blank=True)
+    last_program_date = models.DateField('最新节目日期', db_index=True, null=True, blank=True)
     last_crawl_dt = models.DateTimeField('最近的采集日期', auto_now=True, null=True)
     create_dt = models.DateTimeField('创建日期', auto_now_add=True, null=True)
-    descr = models.CharField('频道描述', max_length=500, null=True,blank=True)
-    has_epg = models.IntegerField('是否有节目表',choices=need_get, default=0, db_index=True)
+    descr = models.CharField('描述', max_length=500, null=True,blank=True)
     ineed = models.IntegerField('是否需获取', choices=need_get,default=0, db_index=True)
-    source = models.CharField('节目来源', choices = source_choices,max_length=50, db_index=True, null=True)
-    recrawl = models.IntegerField('需重新获取当天数据', choices = need_get,db_index=True, default=0)
+    source = models.CharField('节目来源', choices = source_choices,max_length=50, db_index=True, null=True, blank=True)
+    recrawl = models.IntegerField('是否重新获取', choices = need_get,db_index=True, default=0)
     patten = models.CharField('本频道正则', max_length=100, null=True,blank = True)
     remark = models.CharField('备注', max_length=500, null=True ,blank = True)
 
     def __str__(self):
-        return '-'.join([str(self.id),self.name,self.tvg_name,self.source if self.source else ''])
+        # return '-'.join([str(self.id),self.name,self.tvg_name,self.source if self.source else ''])
+        return self.name
 
     class Meta:
         verbose_name = '频道列表'
         verbose_name_plural = '频道列表'
+    
     # 获取需要抓取的频道，如果需要重新抓取，则使用，recrawl = 1
-    def get_crawl_channels(self, need_date, recrawl=0):
+    @classmethod
+    def get_crawl_channels(cls, need_date, recrawl=0):
         if recrawl == 1:
-            return self.objects.filter(ineed=1, has_epg=1).filter(Q(recrawl=1) | Q(last_program_date__lt=need_date))
+            return cls.objects.filter(ineed=1).filter(Q(recrawl=1) | Q(last_program_date__isnull=True) | Q(last_program_date__lt=need_date))
         else:
-            return self.objects.filter(has_epg=1, ineed=1, last_program_date__lt=need_date)
-        # 获取指定名称的频道，用于测试,只返回获取到数据的第一个
-
-    def get_spec_channel(self, name=0, id=0):
+            return cls.objects.filter(ineed=1).filter(Q(last_program_date__isnull=True) | Q(last_program_date__lt=need_date))
+    
+    # 获取指定名称的频道，用于测试,只返回获取到数据的第一个
+    @classmethod    
+    def get_spec_channel(cls, name=0, id=0):
         if name:
-            ret = self.objects.filter(tvg_name__icontains=name)[:1]
+            ret = cls.objects.filter(tvg_name__icontains=name)[:1]
             if ret.count() == 0:
-                ret = self.objects.filter(name__icontains=name)[:1]
+                ret = cls.objects.filter(name__icontains=name)[:1]
         elif id:
-            ret = self.objects.filter(id=id)
+            ret = cls.objects.filter(id=id)
         else:
-            ret = self.objects.filter(tvg_name='CCTV1')
+            ret = cls.objects.filter(tvg_name='CCTV1')
         return ret
 
     # 获取某一频道的信息（严格匹配）
@@ -84,22 +97,37 @@ class Channel(models.Model):
 
     def get_need_channels(self, sorts):
         if sorts == 'all':
-            channels = self.objects.filter(ineed=1, has_epg=1)
+            channels = self.objects.filter(ineed=1)
         else:
-            channels = self.objects.filter(sort__in=sorts, ineed=1, has_epg=1)
+            channels = self.objects.filter(sort__in=sorts, ineed=1)
         return [channels, channels.values_list('id')]
+    
     def get_match_channels(self):
-        channels = self.objects.filter(ineed = 1,has_epg=1)
+        channels = self.objects.filter(ineed = 1)
         return channels
     def save(self, *args, **kwargs):
-        if self.source in self.channel_id:
-            super().save(*args, **kwargs)
-        else:
-            pass
+        # if self.source in self.channel_id:
+        #     super().save(*args, **kwargs)
+        # else:
+        #     pass
+        super().save(*args, **kwargs)
 
+    # 生成m3u文件
+    @classmethod
+    def create_m3u(cls):
+        channels = cls.objects.all()
+        chans = []
+        for channel in channels:
+            chans.append(Chan(channel.tvg_id,channel.tvg_name,channel.logo,channel.sort,\
+                              channel.catchup,channel.catchup_source,channel.catchup_days,\
+                              channel.name,channel.live_url))
+        playlist = IptvList(header='x-tvg-url="https://live.fanmingming.com/e.xml"',channels=chans)
+        dir_base = os.path.dirname(os.path.dirname(__file__))
+        file_path = os.path.join(dir_base,'mypackage','iptv_new.m3u')
+        playlist.dump(file_path)
 
 class Epg(models.Model):
-    channel_id = models.CharField('频道ID', db_index=True, max_length=50)
+    channel = models.ForeignKey(Channel, verbose_name='频道',on_delete=models.CASCADE)
     starttime = models.DateTimeField('开始时间', db_index=True)
     endtime = models.DateTimeField('结束时间', null=True)
     title = models.CharField('节目名称', max_length=200)
@@ -108,11 +136,11 @@ class Epg(models.Model):
     crawl_dt = models.DateTimeField('采集时间', auto_now_add=True, null=True)
     source = models.CharField('节目来源', max_length=20, null=True)
     def __str__(self):
-        return '%s %s %s' % (self.channel_id, self.starttime.astimezone(tz=tz_sh), self.title)
+        return '%s %s %s' % (self.channel.id, self.starttime.astimezone(tz=tz_sh), self.title)
 
     def to_dict(self):
         ret = {
-            'channel_id': self.channel_id,
+            'channel_id': self.channel.id,
             'starttime': self.starttime,
             'endtime': self.endtime,
             'title': self.title,
@@ -131,29 +159,28 @@ class Epg(models.Model):
         super().save(*args, **kwargs)
 
     # 获取指定天数的EPG
-    def get_epgs(self, channel_ids, need_program_date):
+    @classmethod
+    def get_epgs(cls, channel_ids, need_program_date):
         if need_program_date > datetime.datetime.now().date():
-            epgs = self.objects.filter(
+            epgs = cls.objects.filter(
                 channel_id__in=channel_ids,program_date__gte=datetime.datetime.now(),program_date__lte=need_program_date)  # ,program_date__lte=program_date,program_date__gte=datetime.datetime.now().date())
             if epgs.count() == 0:  # 没有数据则获取当天数据
-                epgs = self.objects.filter(channel_id__in=channel_ids, program_date=datetime.datetime.now().date())
+                epgs = cls.objects.filter(channel_id__in=channel_ids, program_date=datetime.datetime.now().date())
         else:
-            epgs = self.objects.filter(channel_id__in=channel_ids, program_date=need_program_date)
+            epgs = cls.objects.filter(channel_id__in=channel_ids, program_date=need_program_date)
         for epg in epgs:
             if epg.endtime is None:
                 epg.endtime = datetime.datetime.combine(epg.starttime.date(),
                                                         datetime.time(hour=23, minute=59, second=59))
         return epgs
-
-    def test(self):
-        return self.objects.filter(source='smg')
-
-    def get_single_epg(self, channel, need_date):
+    
+    @classmethod
+    def get_single_epg(cls, channel, need_date):
         epgs_list = []
         no_endtime_endtime = datetime.datetime.combine(need_date,
                                                        datetime.time(hour=12, minute=59, second=59)).astimezone(
             tz=tz_sh)
-        epgs = self.objects.filter(channel_id=channel.id, program_date=need_date)
+        epgs = cls.objects.filter(channel_id=channel.id, program_date=need_date)
 
         for epg in epgs:  # 将结束时间为空白的字段，加上当天最晚一秒.直接在此处处理时区问题，后面获取后不再处理
             if epg.endtime is None:
@@ -166,7 +193,8 @@ class Epg(models.Model):
             epgs_list.append(epg1)
         return epgs_list
 
-    def save_to_dbs(self, ret):
+    @classmethod
+    def save_to_dbs(cls, ret):
         success = 1
         msg = ''
         querylist = []
@@ -177,7 +205,7 @@ class Epg(models.Model):
             for x in range(epglen):
                 if x < epglen - 1:
                     ret['epgs'][x]['endtime'] = ret['epgs'][x + 1]['starttime']
-            cs = self.objects.filter(channel_id=ret['epgs'][0]['channel_id'],
+            cs = cls.objects.filter(channel_id=ret['epgs'][0]['channel_id'],
                                      starttime__lt=ret['epgs'][0]['starttime'].astimezone(tz=tz_sh))
             if cs:
                 cs = cs.latest('starttime')
@@ -204,7 +232,7 @@ class Epg(models.Model):
                 msg = 'web-models-Epg-save_to_dbs %s' % (e)
                 continue
         try:
-            ret = self.objects.bulk_create(querylist)
+            ret = cls.objects.bulk_create(querylist)
         except Exception as e:
             success = 0
             msg = 'web-models-Epg-save_to_dbs bulk_create2： %s' % (e)
@@ -213,16 +241,55 @@ class Epg(models.Model):
             'data': ret,
             'msg': msg
         }
+    
+    @classmethod
+    def save_to_dbs_from_xml(cls, repl=False):
+        dir_base = os.path.dirname(os.path.dirname(__file__))
+        file_path = os.path.join(dir_base,'mypackage','pp.xml')
+        root = etree.parse(file_path)
+        chans = root.xpath('//channel')
+        for chan in chans:
+            tvg_id = chan.get('id')
+            try:
+                channel = Channel.objects.get(tvg_id=tvg_id)
+                progs = root.xpath('//programme[@channel="{}"]'.format(tvg_id))
+                prog_dates = []
+                for prog in progs:
+                    prog_date = datetime.datetime.strptime(prog.get('start'),'%Y%m%d%H%M%S +0800').date()
+                    if prog_date not in prog_dates:
+                        prog_dates.append(prog_date)
+                if repl:
+                    cls.del_channel_epgs(channel.id,min(prog_dates),max(prog_dates))
+                has_epgs = {}
+                for prog_date in prog_dates:
+                    if not repl and cls.objects.filter(channel=channel,program_date=prog_date).count() > 0:
+                        has_epgs[prog_date] = True
+                    else:
+                        has_epgs[prog_date] = False
+                for prog in progs:
+                    prog_date = datetime.datetime.strptime(prog.get('start'),'%Y%m%d%H%M%S +0800').date()
+                    if not has_epgs[prog_date]:
+                        time_s = datetime.datetime.strptime(prog.get('start'),'%Y%m%d%H%M%S +0800').astimezone(tz=tz_sh)
+                        time_e = datetime.datetime.strptime(prog.get('stop'),'%Y%m%d%H%M%S +0800').astimezone(tz=tz_sh)
+                        title = prog.find('title').text
+                        descr = prog.find('desc')
+                        cls.objects.create(channel=channel,starttime=time_s,endtime=time_e,\
+                            title=title,descr=descr,program_date=prog_date,source='xml')
+                        if channel.last_program_date is None or channel.last_program_date < prog_date:
+                            channel.last_program_date = prog_date
+                            channel.save()
+            except Channel.DoesNotExist:
+                pass
 
-    # 删除某一频道的某一时间段的节目表_
-    def del_channel_epgs(self, channel_id, program_date, last_program_date):
+    # 删除某一频道的某一时间段的节目表
+    @classmethod
+    def del_channel_epgs(cls, channel_id, program_date, last_program_date):
         if program_date == last_program_date:
-            ret = self.objects.filter(channel_id=channel_id, program_date=program_date).delete()
+            ret = cls.objects.filter(channel_id=channel_id, program_date=program_date).delete()
         else:
-            ret = self.objects.filter(channel_id=channel_id, program_date__gte=program_date,
+            ret = cls.objects.filter(channel_id=channel_id, program_date__gte=program_date,
                                       program_date_lte=last_program_date).delete()
         return ret
-
 
 class Crawl_log(models.Model):
     LOG_LEVELS = (

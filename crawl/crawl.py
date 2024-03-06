@@ -28,14 +28,14 @@ def main():
         dt = datetime.datetime.now().date() + datetime.timedelta(days=d) if not cname else crawl_dt
         # 单独使用命令获取某一个频道的信息
         if cname:
-            channels = Channel.get_spec_channel(Channel, name=cname)
+            channels = Channel.get_spec_channel(name=cname)
             max_crawl_days = 1
         else:
             if recrawl and d < recrawl_days:
                 recrawl1 = 1
             else:
                 recrawl1 = 0
-            channels = Channel.get_crawl_channels(Channel, dt, recrawl=recrawl1)
+            channels = Channel.get_crawl_channels(dt, recrawl=recrawl1)
         channel_num = 0  # 已经采集的频道数量（成功与不成功都有）
         failed_channels = [] #获取失败的频道
         success_num = 0  #获取成功的频道
@@ -81,14 +81,14 @@ def main():
                 success_num += 1
                 msgx = ''
                 if recrawl and channel.recrawl and d < recrawl_days: #重新获取的频道需要删除旧数据
-                    del_ret = Epg.del_channel_epgs(Epg, channel.id, dt, ret['last_program_date'])
+                    del_ret = Epg.del_channel_epgs(channel.id, dt, ret['last_program_date'])
                     msgx = '重新获取，删除%s条数据' % del_ret[0]
                     recrawl_today = 1  # 确定今天是否需要重新采集，重新采集的话，不更新
                 else:
                     recrawl_today = 0
                 # 是否需要保存EPG信息至数据库
                 if save_to_db:
-                    save_ret = Epg.save_to_dbs(Epg, ret)
+                    save_ret = Epg.save_to_dbs(ret)
                     if save_ret['success']:
                         msg3 = '并已经保存至数据库'
                     else:
@@ -186,7 +186,7 @@ def gen_xml(sort):
     tz = ' +0800'
     need_date = datetime.datetime.now().date() + datetime.timedelta(days = get_days)-datetime.timedelta(days=1)
     channels = Channel.get_need_channels(Channel,xmlinfo[sort]['sortname'])
-    epgs = Epg.get_epgs(Epg,channels[1],need_date)
+    epgs = Epg.get_epgs(channels[1],need_date)
     log('crawl-gen_xml共有：%s 个频道,%s条信息需要生成'%(channels[1].count(),epgs.count()))
     if not os.path.exists(os.path.dirname(xmldir)):
         os.makedirs(os.path.dirname(xmldir))
@@ -195,19 +195,19 @@ def gen_xml(sort):
     for channel in channels[0]:
         if channel.sort in in_exclude_channel['xml'] and channel.name not in in_exclude_channel['include_xml'] and channel.tvg_name not in in_exclude_channel['include_xml']:
             continue
-        c = '<channel id="%s"><display-name lang="zh">%s</display-name></channel>'%(channel.id,channel.tvg_name)
+        c = '<channel id="%s"><display-name lang="zh">%s</display-name></channel>'%(channel.tvg_id,channel.tvg_name)
         f.write(c)
     # noepg_channel = '<channel id="9999"><display-name lang="zh">noepg</display-name></channel>'
     # f.write(noepg_channel)
     for epg in epgs:
         start = epg.starttime.astimezone(tz=tz_sh).strftime('%Y%m%d%H%M%S') + tz
         end = epg.endtime.astimezone(tz=tz_sh).strftime('%Y%m%d%H%M%S') + tz
-        id = epg.channel_id
+        tvg_id = epg.channel.tvg_id
         title = epg.title+add_info_title
         title = title.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;').replace("'",'&apos;').replace('"','&quot;')
         desc = epg.descr+add_info_desc
         desc = desc.replace('&','&amp;').replace('<','&lt;').replace('>','&gt;').replace("'",'&apos;').replace('"','&quot;')
-        programinfo = '''<programme start="%s" stop="%s" channel="%s"><title lang="zh">%s</title><desc lang="zh">%s</desc></programme>'''%(start,end,id,title,desc)
+        programinfo = '''<programme start="%s" stop="%s" channel="%s"><title lang="zh">%s</title><desc lang="zh">%s</desc></programme>'''%(start,end,tvg_id,title,desc)
         f.write(programinfo)
     # for x in range(10):
     #     noepg_program_day = noepg('noepg','9999',(datetime.datetime.now().date() + datetime.timedelta(days=x-5)))
