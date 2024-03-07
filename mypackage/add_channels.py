@@ -86,6 +86,6 @@ def test3():
             epg.save()
 
 def test4():
-    Epg.save_to_dbs_from_xml(repl=True)
+    Epg.save_to_dbs_from_xml(repl=False)
 if __name__ == '__main__':
     test4()

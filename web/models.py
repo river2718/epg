@@ -7,6 +7,7 @@ import datetime
 from django.utils import timezone
 from mypackage.iptv import Channel as Chan, IptvList
 import os
+from requests import Session
 from lxml import etree
 
 tz_sh = tz.gettz('Asia/Shanghai')
@@ -244,9 +245,15 @@ class Epg(models.Model):
     
     @classmethod
     def save_to_dbs_from_xml(cls, repl=False):
-        dir_base = os.path.dirname(os.path.dirname(__file__))
-        file_path = os.path.join(dir_base,'mypackage','pp.xml')
-        root = etree.parse(file_path)
+        # dir_base = os.path.dirname(os.path.dirname(__file__))
+        # file_path = os.path.join(dir_base,'mypackage','pp.xml')
+        # root = etree.parse(file_path)
+        with Session() as s:
+            s.headers.update({'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36)'})
+            r = s.get('https://live.fanmingming.com/e.xml')
+            r.raise_for_status()
+        root = etree.XML(r.content)
+        num_progs = 0
         chans = root.xpath('//channel')
         for chan in chans:
             tvg_id = chan.get('id')
@@ -275,11 +282,13 @@ class Epg(models.Model):
                         descr = prog.find('desc')
                         cls.objects.create(channel=channel,starttime=time_s,endtime=time_e,\
                             title=title,descr=descr,program_date=prog_date,source='xml')
+                        num_progs = num_progs+1
                         if channel.last_program_date is None or channel.last_program_date < prog_date:
                             channel.last_program_date = prog_date
                             channel.save()
             except Channel.DoesNotExist:
                 pass
+        print('新增{}条节目'.format(num_progs))
 
     # 删除某一频道的某一时间段的节目表
     @classmethod
