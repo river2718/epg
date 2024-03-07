@@ -21,7 +21,7 @@ class EpgAdmin(admin.ModelAdmin):
     list_display = ('channel', 'starttime', 'title','program_date','source')
     list_display_links = ('title',)
     date_hierarchy = 'program_date'
-    search_fields =('channel', ) #搜索字段
+    search_fields =('channel__name', 'title') #搜索字段
 admin.site.register(Epg,EpgAdmin)
 class Crawl_logAdmin(admin.ModelAdmin):
     list_display = ('dt', 'msg', 'level')

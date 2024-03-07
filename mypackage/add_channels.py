@@ -87,5 +87,9 @@ def test3():
 
 def test4():
     Epg.save_to_dbs_from_xml(repl=False)
+
+def test5():
+    Epg.objects.all().delete()
+    Channel.objects.update(last_program_date=None)
 if __name__ == '__main__':
-    test4()
+    test5()

@@ -13,6 +13,7 @@ from lxml import etree
 tz_sh = tz.gettz('Asia/Shanghai')
 class Channel(models.Model):
     source_choices = [
+        ('xml','xml文件'),
         ('tvmao','电视猫'),
         ('tvsou','搜视'),
         ('cctv','央视'),
@@ -52,7 +53,7 @@ class Channel(models.Model):
     last_program_date = models.DateField('最新节目日期', db_index=True, null=True, blank=True)
     last_crawl_dt = models.DateTimeField('最近的采集日期', auto_now=True, null=True)
     create_dt = models.DateTimeField('创建日期', auto_now_add=True, null=True)
-    descr = models.CharField('描述', max_length=500, null=True,blank=True)
+    descr = models.CharField('描述', max_length=500, default='')
     ineed = models.IntegerField('是否需获取', choices=need_get,default=0, db_index=True)
     source = models.CharField('节目来源', choices = source_choices,max_length=50, db_index=True, null=True, blank=True)
     recrawl = models.IntegerField('是否重新获取', choices = need_get,db_index=True, default=0)
@@ -132,7 +133,7 @@ class Epg(models.Model):
     starttime = models.DateTimeField('开始时间', db_index=True)
     endtime = models.DateTimeField('结束时间', null=True)
     title = models.CharField('节目名称', max_length=200)
-    descr = models.TextField('节目描述', null=True)
+    descr = models.TextField('节目描述',default='')
     program_date = models.DateField('节目所属于日期', db_index=True)
     crawl_dt = models.DateTimeField('采集时间', auto_now_add=True, null=True)
     source = models.CharField('节目来源', max_length=20, null=True)
