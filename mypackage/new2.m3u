@@ -1,0 +1,71 @@
+#EXTM3U x-tvg-url="https://mirror.ghproxy.com/https://raw.githubusercontent.com/Meroser/IPTV/main/tvxml.xml,https://mirror.ghproxy.com/https://raw.githubusercontent.com/Meroser/EPG-test/main/tvxml-test.xml.gz" catchup="append" catchup-source="?playseek=${(b)yyyyMMddHHmmss}-${(e)yyyyMMddHHmmss}"
+#EXTINF:-1 tvg-id="xc4k" tvg-name="纯享4K" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/cx4k.png" group-title="数字高清",纯享4K
+http://[2409:8087:2001:20:2800:0:df6e:eb11]/ott.mobaibox.com/PLTV/3/224/3221228242/index.m3u8
+#EXTINF:-1 tvg-id="wssj" tvg-name="武术世界" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/wssj.png" group-title="数字高清",武术世界
+http://[2409:8087:4c0a:22:1::11]:6410/170000001115/UmaiCHAN638078be5d654/index.m3u8?AuthInfo=toEYVdLfxymUP2l9NZpQI5%2BK6T7j%2FlRm%2BvbM9VO7bA0MVaBO3fffRWKM%2FzNpNYjRBAiSJylXYBAiox0V94ejMfwEtXXuH8b8M%2F%2FDznZB61s
+#EXTINF:-1 tvg-id="wwbk" tvg-name="文物宝库" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/wwbk.png" group-title="数字高清",文物宝库
+http://[2409:8087:4c0a:22:1::11]:6410/170000001115/UmaiCHAN638078a346161/index.m3u8?AuthInfo=toEYVdLfxymUP2l9NZpQI5%2BK6T7j%2FlRm%2BvbM9VO7bA199v9hZiIrZ%2B5X675R6%2FGDjgcqn5UaJ6D814KM9%2FvF7QwvFfeEXMAK7LltfEC%2FKQQ
+#EXTINF:-1 tvg-id="cwjd" tvg-name="重温经典" tvg-logo="https://cdn.jsdelivr.net/gh/Meroser/IPTV@main/TVlogo/cwjd.png" group-title="数字高清",重温经典
+http://43.141.130.70/zycfcdn.gdwlcloud.com/PLTV/88888888/224/3221225563/index.m3u8
+#EXTINF:-1 tvg-id="tywq" tvg-name="天元围棋" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/tywq.png" group-title="数字高清",天元围棋
+http://[2409:8087:2001:20:2800:0:df6e:eb23]/ott.mobaibox.com/PLTV/3/224/3221228513/index.m3u8
+#EXTINF:-1 tvg-id="Xfpy" tvg-name="先锋乒羽" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/xfpy.png" group-title="地方特色",先锋乒羽
+https://mirror.ghproxy.com/https://raw.githubusercontent.com/Meroser/mgtv/main/m3u8/hn13.m3u8
+#EXTINF:-1 tvg-id="HN01" tvg-name="湖南经视" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Hunan1.png" group-title="地方特色",湖南经视
+https://mirror.ghproxy.com/https://raw.githubusercontent.com/Meroser/mgtv/main/m3u8/hn01.m3u8
+#EXTINF:-1 tvg-id="HN02" tvg-name="湖南都市" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Hunan2.png" group-title="地方特色",湖南都市
+https://mirror.ghproxy.com/https://raw.githubusercontent.com/Meroser/mgtv/main/m3u8/hn02.m3u8
+#EXTINF:-1 tvg-id="HN03" tvg-name="湖南爱晚" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Hunan3.png" group-title="地方特色",湖南爱晚
+https://mirror.ghproxy.com/https://raw.githubusercontent.com/Meroser/mgtv/main/m3u8/hn05.m3u8
+#EXTINF:-1 tvg-id="HN04" tvg-name="湖南国际" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Hunan4.png" group-title="地方特色",湖南国际
+https://mirror.ghproxy.com/https://raw.githubusercontent.com/Meroser/mgtv/main/m3u8/hn06.m3u8
+#EXTINF:-1 tvg-id="HN05" tvg-name="湖南娱乐" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Hunan5.png" group-title="地方特色",湖南娱乐
+https://mirror.ghproxy.com/https://raw.githubusercontent.com/Meroser/mgtv/main/m3u8/hn07.m3u8
+#EXTINF:-1 tvg-id="HN06" tvg-name="湖南电影" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Hunan6.png" group-title="地方特色",湖南电影
+https://mirror.ghproxy.com/https://raw.githubusercontent.com/Meroser/mgtv/main/m3u8/hn04.m3u8
+#EXTINF:-1 tvg-id="HN07" tvg-name="湖南电视剧" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Hunan7.png" group-title="地方特色",湖南电视剧
+https://mirror.ghproxy.com/https://raw.githubusercontent.com/Meroser/mgtv/main/m3u8/hn03.m3u8
+#EXTINF:-1 tvg-id="HN08" tvg-name="长沙新闻" tvg-logo="https://cdn.jsdelivr.net/gh/Meroser/mgtv@main/logo/csxw.png" group-title="地方特色",长沙新闻
+https://mirror.ghproxy.com/https://raw.githubusercontent.com/Meroser/mgtv/main/m3u8/hn14.m3u8
+#EXTINF:-1 tvg-id="HN09" tvg-name="长沙政法" tvg-logo="https://cdn.jsdelivr.net/gh/Meroser/mgtv@main/logo/cszf.png" group-title="地方特色",长沙政法
+https://mirror.ghproxy.com/https://raw.githubusercontent.com/Meroser/mgtv/main/m3u8/hn15.m3u8
+#EXTINF:-1 tvg-id="HN10" tvg-name="长沙女性" tvg-logo="https://cdn.jsdelivr.net/gh/Meroser/mgtv@main/logo/csnx.png" group-title="地方特色",长沙女性
+https://mirror.ghproxy.com/https://raw.githubusercontent.com/Meroser/mgtv/main/m3u8/hn16.m3u8
+#EXTINF:-1 tvg-id="SX01" tvg-name="黄河电视台" tvg-logo="https://cdn.jsdelivr.net/gh/Meroser/IPTV-DF@main/logo/Shanxi1.png" group-title="地方特色",黄河电视台
+https://mirror.ghproxy.com/https://raw.githubusercontent.com/Meroser/IPTV-DF/main/m3u8/shanxi/shanxi1.m3u8
+#EXTINF:-1 tvg-id="SX02" tvg-name="山西经济与科技" tvg-logo="https://cdn.jsdelivr.net/gh/Meroser/IPTV-DF@main/logo/Shanxi2.png" group-title="地方特色",山西经济与科技
+https://mirror.ghproxy.com/https://raw.githubusercontent.com/Meroser/IPTV-DF/main/m3u8/shanxi/shanxi2.m3u8
+#EXTINF:-1 tvg-id="SX03" tvg-name="山西影视" tvg-logo="https://cdn.jsdelivr.net/gh/Meroser/IPTV-DF@main/logo/Shanxi3.png" group-title="地方特色",山西影视
+https://mirror.ghproxy.com/https://raw.githubusercontent.com/Meroser/IPTV-DF/main/m3u8/shanxi/shanxi3.m3u8
+#EXTINF:-1 tvg-id="SX04" tvg-name="山西社会与法治" tvg-logo="https://cdn.jsdelivr.net/gh/Meroser/IPTV-DF@main/logo/Shanxi4.png" group-title="地方特色",山西社会与法治
+https://mirror.ghproxy.com/https://raw.githubusercontent.com/Meroser/IPTV-DF/main/m3u8/shanxi/shanxi4.m3u8
+#EXTINF:-1 tvg-id="SX05" tvg-name="山西文体生活" tvg-logo="https://cdn.jsdelivr.net/gh/Meroser/IPTV-DF@main/logo/Shanxi5.png" group-title="地方特色",山西文体生活
+https://mirror.ghproxy.com/https://raw.githubusercontent.com/Meroser/IPTV-DF/main/m3u8/shanxi/shanxi5.m3u8
+#EXTINF:-1 tvg-id="HB01" tvg-name="湖北综合" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Hubei1.png" group-title="地方特色",湖北综合
+http://[2409:8087:4c0a:22:1::11]:6410/170000001115/UmaiCHAN638072216f7da/index.m3u8?AuthInfo=9kOOdBn7MFF%2F2bWjKgahUUAdKgLqNB5aOAUhcp5CeNLx3R3LdIBdA5q61lut1LwZcw4SC2tJubc%2Bq5t%2F61jvWCtjrJL0x%2BHncPgdmcbBW9I
+#EXTINF:-1 tvg-id="HB02" tvg-name="湖北影视" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Hubei2.png" group-title="地方特色",湖北影视
+http://[2409:8087:4c0a:22:1::11]:6410/170000001115/UmaiCHAN6380728abccd2/index.m3u8?AuthInfo=9kOOdBn7MFF%2F2bWjKgahUUAdKgLqNB5aOAUhcp5CeNKU1xiiKGJYFBZK9RpEkaggogtHJZW6nJQqLppbEYE%2BqJ9kJW%2FMvKldfS2dCii9VSI
+#EXTINF:-1 tvg-id="HB03" tvg-name="湖北教育" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Hubei3.png" group-title="地方特色",湖北教育
+http://[2409:8087:4c0a:22:1::11]:6410/170000001115/UmaiCHAN638072a6cbbf6/index.m3u8?AuthInfo=9kOOdBn7MFF%2F2bWjKgahUUAdKgLqNB5aOAUhcp5CeNKTFQuOKNd5i0HMa3ydMWIQ6kJ2fBJGJ77BLTXK72CqUYQsX3ZguYt0954s9hfZTfc
+#EXTINF:-1 tvg-id="HB04" tvg-name="湖北生活" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Hubei4.png" group-title="地方特色",湖北生活
+http://[2409:8087:4c0a:22:1::11]:6410/170000001115/UmaiCHAN638072c62e405/index.m3u8?AuthInfo=9kOOdBn7MFF%2F2bWjKgahUUAdKgLqNB5aOAUhcp5CeNKJPodw5BcDirSOw7egztI5bUvJjqPzSNAhrA37GrbRBIAjGQpzP0QmgsmuHnQyd2c
+#EXTINF:-1 tvg-id="HB05" tvg-name="湖北公共" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Hubei5.png" group-title="地方特色",湖北公共
+http://[2409:8087:4c0a:22:1::11]:6410/170000001115/UmaiCHAN6380726d0ee3b/index.m3u8?AuthInfo=9kOOdBn7MFF%2F2bWjKgahUUAdKgLqNB5aOAUhcp5CeNKgjpyhD%2FJd6SZjkcHAKXbsjwotAY57dianC4%2ByY7artm7J7F4GFO6G99D0bYMJRxI
+#EXTINF:-1 tvg-id="HB06" tvg-name="湖北经视" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Hubei6.png" group-title="地方特色",湖北经视
+http://[2409:8087:4c0a:22:1::11]:6410/170000001115/UmaiCHAN63807203543e3/index.m3u8?AuthInfo=9kOOdBn7MFF%2F2bWjKgahUUAdKgLqNB5aOAUhcp5CeNLVCQ3pDe4nBySab%2B3xPL123aTSCRugzF2ABe36IIJw2evZbYdWUo0ffUw53bflDgU
+#EXTINF:-1 tvg-id="HB07" tvg-name="湖北垄上" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Hubei7.png" group-title="地方特色",湖北垄上
+http://[2409:8087:4c0a:22:1::11]:6410/170000001115/UmaiCHAN638072463c333/index.m3u8?AuthInfo=9kOOdBn7MFF%2F2bWjKgahUUAdKgLqNB5aOAUhcp5CeNL%2Be1h4FfA5QqwJ7IPOz3p2qIS7djSxm17Htd%2FckZkm%2FVqsKHEJFJt26ju9iibzMEo
+#EXTINF:-1 tvg-id="HLJ01" tvg-name="黑龙江新闻法治" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Heilongjiang1.png" group-title="地方特色",黑龙江新闻法治
+http://[2409:8087:1a01:df::4077]/PLTV/88888888/224/3221225967/index.m3u8
+#EXTINF:-1 tvg-id="HLJ02" tvg-name="黑龙江文体" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Heilongjiang2.png" group-title="地方特色",黑龙江文体
+http://[2409:8087:1a01:df::4077]/PLTV/88888888/224/3221225965/index.m3u8
+#EXTINF:-1 tvg-id="HLJ03" tvg-name="黑龙江影视" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Heilongjiang3.png" group-title="地方特色",黑龙江影视
+http://[2409:8087:1a01:df::4077]/PLTV/88888888/224/3221225973/index.m3u8
+#EXTINF:-1 tvg-id="HLJ04" tvg-name="黑龙江都市" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Heilongjiang4.png" group-title="地方特色",黑龙江都市
+http://[2409:8087:1a01:df::4077]/ottrrs.hl.chinamobile.com/PLTV/88888888/224/3221226301/index.m3u8
+#EXTINF:-1 tvg-id="HLJ05" tvg-name="黑龙江公共农村" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Heilongjiang5.png" group-title="地方特色",黑龙江公共农村
+http://[2409:8087:1a01:df::4077]/PLTV/88888888/224/3221225994/index.m3u8
+#EXTINF:-1 tvg-id="HLJ06" tvg-name="黑龙江少儿" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/Heilongjiang6.png" group-title="地方特色",黑龙江少儿
+http://[2409:8087:1a01:df::4077]/PLTV/88888888/224/3221225979/index.m3u8
+#EXTINF:-1 tvg-id="N10" tvg-name="NewTV惊悚悬疑" tvg-logo="https://cdn.jsdelivr.net/gh/wanglindl/TVlogo@main/img/NewTV10.png" group-title="NewTV",NewTV惊悚悬疑
+http://[2409:8087:2001:20:2800:0:df6e:eb18]/wh7f454c46tw2482771376_951312812/ott.mobaibox.com/PLTV/3/224/3221227536/index.m3u8

@@ -9,6 +9,7 @@ from mypackage.iptv import Channel as Chan, IptvList
 import os
 from requests import Session
 from lxml import etree
+from django.conf import settings
 
 tz_sh = tz.gettz('Asia/Shanghai')
 class Channel(models.Model):
@@ -43,13 +44,15 @@ class Channel(models.Model):
     channel_id = models.CharField('来源网站ID', max_length=300, blank=True)
     tvg_id = models.CharField('tvg-id',max_length=50,blank=True)
     tvg_name = models.CharField('tvg-name', null=False, max_length=100, db_index=True)
+    num = models.PositiveIntegerField('顺序号', default=9999, blank=True)
     catchup = models.CharField('回看模式', max_length=50, blank=True)
     catchup_source = models.CharField('回看地址', max_length=50, blank=True)
     catchup_days = models.PositiveIntegerField('回看天数', null=True, blank=True)
-    live_url = models.URLField('直播地址', null=True, blank=True)
+    live_url = models.URLField('直播地址', max_length=500, null=True, blank=True)
     sort = models.CharField('分类', null=False, max_length=50, db_index=True)  # 1，2，3，4，5
     # logo = models.CharField('台标地址', max_length=400, null=True)
     logo = models.URLField('台标地址', blank=True)
+    logo_file = models.ImageField('台标',upload_to='web/logos',blank=True)
     last_program_date = models.DateField('最新节目日期', db_index=True, null=True, blank=True)
     last_crawl_dt = models.DateTimeField('最近的采集日期', auto_now=True, null=True)
     create_dt = models.DateTimeField('创建日期', auto_now_add=True, null=True)
@@ -117,7 +120,7 @@ class Channel(models.Model):
     # 生成m3u文件
     @classmethod
     def create_m3u(cls):
-        channels = cls.objects.all()
+        channels = cls.objects.filter(ineed=1).order_by('num')
         chans = []
         for channel in channels:
             chans.append(Chan(channel.tvg_id,channel.tvg_name,channel.logo,channel.sort,\
@@ -127,6 +130,55 @@ class Channel(models.Model):
         dir_base = os.path.dirname(os.path.dirname(__file__))
         file_path = os.path.join(dir_base,'mypackage','iptv_new.m3u')
         playlist.dump(file_path)
+
+    @classmethod
+    def reorder_channels(cls):
+        dir_base = os.path.dirname(os.path.dirname(__file__))
+        file_path = os.path.join(dir_base,'mypackage','iptv.m3u')
+        playlist = IptvList()
+        playlist.loadf(file_path)
+        num = 0
+        for chan in playlist.channels:
+            num = num+1
+            try:
+                channel = cls.objects.get(tvg_id=chan.id)
+                channel.num = num
+                channel.save()
+            except Channel.DoesNotExist:
+                print(chan.id)
+                pass
+
+    # 清理不用的logo文件
+    @classmethod
+    def clean_logos(cls):
+        files_delete = []
+        path_rel = 'web/logos'
+        with os.scandir(os.path.join(settings.MEDIA_ROOT,path_rel)) as it:
+            for entry in it:
+                if not cls.objects.filter(logo_file=path_rel+'/'+entry.name).exists():
+                    files_delete.append(entry.path)
+        for file_d in files_delete:
+            os.remove(file_d)
+        return len(files_delete)
+    
+    # 重命名logo文件
+    @classmethod
+    def rename_logos(cls):
+        cls.clean_logos()
+        num = 0
+        for channel in cls.objects.all():
+            initial_path = channel.logo_file.path
+            initial_name = channel.logo_file.name
+            __,ext = os.path.splitext(initial_name)
+            new_name = "web/logos/"+channel.tvg_name+ext
+            if new_name != initial_name:
+                channel.logo_file.name = new_name
+                new_path = settings.MEDIA_ROOT / channel.logo_file.name
+                os.rename(initial_path, new_path)
+                channel.save()
+                num = num+1
+        return num
+
 
 class Epg(models.Model):
     channel = models.ForeignKey(Channel, verbose_name='频道',on_delete=models.CASCADE)

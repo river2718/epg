@@ -63,14 +63,22 @@ def test():
     file_path = os.path.join(dir_base,'pp.xml')
     root = etree.parse(file_path)
     chan_ids = root.xpath('//channel/@id')
-    channels = Channel.objects.all()
+    channels = Channel.objects.filter(id__gte=168)
     for channel in channels:
         if channel.tvg_id in chan_ids:
-            print(channel.tvg_id)
-            progs = root.xpath('//programme[@channel="{}"]'.format(channel.tvg_id))
-            for prog in progs:
-                print(prog[0].text)
-            break
+            # print(channel.tvg_id)
+            # progs = root.xpath('//programme[@channel="{}"]'.format(channel.tvg_id))
+            # for prog in progs:
+            #     print(prog[0].text)
+            # break
+            pass
+        elif channel.tvg_name in chan_ids:
+            channel.tvg_id = channel.tvg_name
+            channel.save()
+        else:
+            channel.tvg_id = channel.tvg_name.replace(' ','_')
+            channel.save()
+            print(channel.name,channel.tvg_id)
          
     # for chan in chans:
     #     print(chan.get('id'))
@@ -91,5 +99,87 @@ def test4():
 def test5():
     Epg.objects.all().delete()
     Channel.objects.update(last_program_date=None)
+
+def test6():
+    base_dir = os.path.dirname(__file__)
+    playlist = IptvList()
+    playlist.loadf(os.path.join(base_dir,'IPTV_m.m3u'))
+    for chan in playlist.channels:
+        if Channel.objects.filter(tvg_name=chan.name).exists():
+            pass
+        elif Channel.objects.filter(name=chan.name).exists():
+            channel = Channel.objects.get(name=chan.name)
+            print(channel.tvg_name,chan.name)
+            channel.tvg_name=chan.name
+            channel.save()
+        elif Channel.objects.filter(name=chan.name.strip('NewTV')).exists():
+            channel = Channel.objects.get(name=chan.name.strip('NewTV'))
+            print(channel.tvg_name,chan.name)
+            channel.tvg_name=chan.name
+            channel.save()
+        elif chan.name == '咪咕直播' or 'CGTN' in chan.name:
+            pass
+        else:
+            print(chan.name)
+            c_dic={
+                    'name':chan.name_display,
+                    'tvg_name':chan.name,
+                    'tvg_id':chan.id,
+                    'sort':chan.group,
+                    'logo':chan.logo,
+                    'catchup':'append',
+                    'catchup_source':'?playseek={utc:YmdHMS}-{utcend:YmdHMS}',
+                    'catchup_days':7,
+                    'live_url':chan.url
+                }
+            Channel.objects.create(**c_dic)
+
+    # for chan in list_del:
+    #     playlist.channels.remove(chan)
+    # playlist.dump(os.path.join(base_dir,'new2.m3u'))
+def test7():
+    channels = Channel.objects.all()
+    for channel in channels:
+        channel.logo = 'https://river2718.github.io/logos/'+channel.tvg_name+'.png'
+        channel.save()
+
+def test8():
+    import requests
+    from django.core.files.base import ContentFile
+    for channel in Channel.objects.all():
+        print(channel.tvg_name)
+
+        url = channel.logo
+        r = requests.get(url)
+        f = ContentFile(r.content)
+        channel.logo_file.save(channel.tvg_name+'.png', f, save=True)
+def test9():
+    print(Channel.rename_logos())
+
+def test10():
+    import re
+    base_dir = os.path.dirname(__file__)
+    with open(os.path.join(base_dir,'md','03.md'),encoding='utf8') as f:
+        txt = f.read()
+    res = re.findall(r'\|([^|]+)\|<img [^>]*>',txt)
+    for name in res:
+        channels = Channel.objects.filter(name=name)
+        if channels.count() ==0:
+            channels = Channel.objects.filter(name=name.strip('频道'))
+        if channels.count() == 1:
+            channel = channels[0]
+            channel.sort = '卫视频道'
+            channel.save()
+        else:
+            print(name)
+def test11():
+    from urllib.parse import urlparse
+    for channel in Channel.objects.all():
+        o = urlparse(channel.live_url)
+        if o.query != '':
+            print(channel.name)
+            channel.catchup_source=channel.catchup_source.replace('?','&')
+            channel.save()
+
 if __name__ == '__main__':
-    test5()
+    Channel.create_m3u()
