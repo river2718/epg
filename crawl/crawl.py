@@ -179,7 +179,7 @@ def get_epg(channel, dt, func_arg=0):
 def gen_xml(sort):
     if cname:  #测试时不生成
         return 0
-    xmlhead = '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE tv SYSTEM "http://api.torrent-tv.ru/xmltv.dtd"><tv generator-info-name="http://epg.51zmt.top:8000" generator-info-url="QQ 31849627">'
+    xmlhead = '<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE tv SYSTEM "https://github.com/kodi-pvr/pvr.iptvsimple"><tv generator-info-name="" generator-info-url="">'
     xmlbottom = '</tv>'
     get_days = crawl_info['gen_xml_days']
     xmldir = '%s/%s'%(dirs['share'],xmlinfo[sort]['basename'])
@@ -224,16 +224,22 @@ def gen_test_m3u(channels,test_dir):
             n += 1
             logo = channel.logo
             tvgname = channel.tvg_name
+            tvgid = channel.tvg_id
             name = channel.name
+            catchup = channel.catchup
+            catchup_source = channel.catchup_source
+            catchup_days = channel.catchup_days
+            live_url = channel.live_url
             grouptitle = channel.sort
-            channel_id = channel.id
-            if grouptitle in ['香港','澳门','海外']:
-                grouptitle = '港澳及国外'
-            if grouptitle not in ['央视','卫视','港澳及国外','台湾','数字付费']:
-                grouptitle = '地方台'
 
-            line = '#EXTINF:-1 tvg-logo="%s" tvg-id="%s" tvg-name="%s" group-title="%s",%s\n'%(logo,channel_id,tvgname,grouptitle,name)
-            line1 = 'http://192.168.2.1:1111/%s.ts\n'%(n)
+            # if grouptitle in ['香港','澳门','海外']:
+            #     grouptitle = '港澳及国外'
+            # if grouptitle not in ['央视','卫视','港澳及国外','台湾','数字付费']:
+            #     grouptitle = '地方台'
+
+            # line = '#EXTINF:-1 tvg-logo="%s" tvg-id="%s" tvg-name="%s" group-title="%s",%s\n'%(logo,channel_id,tvgname,grouptitle,name)
+            line = '#EXTINF:-1 tvg-logo="{}" tvg-id="{}" tvg-name="{}" catchup="{}" catchup_source="{}" catchup_days="{}" group-title="{}", {}\n'.format(logo,tvgid,tvgname,catchup,catchup_source,catchup_days,grouptitle,name)
+            line1 = live_url+'\n'
             f.write(line)
             f.write(line1)
     msg = '生成%s个频道的测试m3u文件：%s'%(channels.count(),dirs['testm3u_dir'])

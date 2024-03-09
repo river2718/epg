@@ -53,7 +53,7 @@ class Channel(models.Model):
     last_program_date = models.DateField('最新节目日期', db_index=True, null=True, blank=True)
     last_crawl_dt = models.DateTimeField('最近的采集日期', auto_now=True, null=True)
     create_dt = models.DateTimeField('创建日期', auto_now_add=True, null=True)
-    descr = models.CharField('描述', max_length=500, default='')
+    descr = models.CharField('描述', max_length=500, default='',blank=True)
     ineed = models.IntegerField('是否需获取', choices=need_get,default=0, db_index=True)
     source = models.CharField('节目来源', choices = source_choices,max_length=50, db_index=True, null=True, blank=True)
     recrawl = models.IntegerField('是否重新获取', choices = need_get,db_index=True, default=0)
@@ -133,7 +133,7 @@ class Epg(models.Model):
     starttime = models.DateTimeField('开始时间', db_index=True)
     endtime = models.DateTimeField('结束时间', null=True)
     title = models.CharField('节目名称', max_length=200)
-    descr = models.TextField('节目描述',default='')
+    descr = models.TextField('节目描述',default='',blank=True)
     program_date = models.DateField('节目所属于日期', db_index=True)
     crawl_dt = models.DateTimeField('采集时间', auto_now_add=True, null=True)
     source = models.CharField('节目来源', max_length=20, null=True)
@@ -221,9 +221,11 @@ class Epg(models.Model):
                 n+=1
                 if ret['source'] in ['mod', 'cabletv', 'tbc', 'g4tv', 'icable', 'nowtv', 'tvb','viu','mytvsuper']:  # 对繁体的转简体中文
                     epg['title'] = cht_to_chs(epg['title'])
-                    descr = cht_to_chs(epg['desc']) if 'desc' in epg else ''
+                    descr = cht_to_chs(epg['desc'])
                 else:
-                    descr = epg['desc'] if 'desc' in epg else ''
+                    descr = epg['desc']
+                if descr is None:
+                    descr = ''
                 querye = Epg(channel_id=epg['channel_id'], starttime=epg['starttime'].astimezone(tz=tz_sh),
                              endtime=epg['endtime'].astimezone(tz=tz_sh) if epg['endtime'] else None,
                              title=epg['title'], descr=descr,
@@ -281,6 +283,8 @@ class Epg(models.Model):
                         time_e = datetime.datetime.strptime(prog.get('stop'),'%Y%m%d%H%M%S +0800').astimezone(tz=tz_sh)
                         title = prog.find('title').text
                         descr = prog.find('desc')
+                        if descr is None:
+                            descr = ''
                         cls.objects.create(channel=channel,starttime=time_s,endtime=time_e,\
                             title=title,descr=descr,program_date=prog_date,source='xml')
                         num_progs = num_progs+1
