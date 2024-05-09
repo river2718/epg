@@ -13,7 +13,7 @@ class ChannelAdmin(admin.ModelAdmin):
     #设置哪些字段可以点击进入编辑界面
     list_display_links = ('id','name',)
     #筛选器
-    list_filter =('sort','source','ineed') #过滤器
+    list_filter =('sort','source','ineed','is_valid') #过滤器
     search_fields =('tvg_name','name','channel_id' ) #搜索字段
 admin.site.register(Channel,ChannelAdmin)
 

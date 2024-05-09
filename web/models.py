@@ -39,6 +39,23 @@ class Channel(models.Model):
         (1,'是'),
         (0,'否')
     ]
+    sort_choices = [
+        (1,'央视频道'),
+        (2,'卫视频道'),
+        (3,'NewTV系列'),
+        (4,'求索系列'),  
+        (5,'北京频道'),
+        (6,'上海频道'),
+        (7,'江苏频道'),
+        (8,'浙江频道'),
+        (9,'湖南频道'),
+        (10,'内蒙古频道'),
+        (11,'山东频道'),
+        (12,'广东频道'),
+        (13,'河南频道'),
+        (14,'辽宁频道'),
+        (15,'陕西频道')
+    ]
     name = models.CharField('显示名称', null=False, max_length=100, db_index=True)
     channel_id = models.CharField('来源网站ID', max_length=300, blank=True)
     tvg_id = models.CharField('tvg-id',max_length=50,blank=True)
@@ -47,13 +64,14 @@ class Channel(models.Model):
     catchup_source = models.CharField('回看地址', max_length=50, blank=True)
     catchup_days = models.PositiveIntegerField('回看天数', null=True, blank=True)
     live_url = models.URLField('直播地址', null=True, blank=True)
+    is_valid = models.BooleanField('有效', default=True)
     sort = models.CharField('分类', null=False, max_length=50, db_index=True)  # 1，2，3，4，5
     # logo = models.CharField('台标地址', max_length=400, null=True)
     logo = models.URLField('台标地址', blank=True)
     last_program_date = models.DateField('最新节目日期', db_index=True, null=True, blank=True)
     last_crawl_dt = models.DateTimeField('最近的采集日期', auto_now=True, null=True)
     create_dt = models.DateTimeField('创建日期', auto_now_add=True, null=True)
-    descr = models.CharField('描述', max_length=500, default='')
+    # descr = models.CharField('描述', max_length=500, default='')
     ineed = models.IntegerField('是否需获取', choices=need_get,default=0, db_index=True)
     source = models.CharField('节目来源', choices = source_choices,max_length=50, db_index=True, null=True, blank=True)
     recrawl = models.IntegerField('是否重新获取', choices = need_get,db_index=True, default=0)
@@ -117,7 +135,7 @@ class Channel(models.Model):
     # 生成m3u文件
     @classmethod
     def create_m3u(cls):
-        channels = cls.objects.all()
+        channels = cls.objects.filter(is_valid=True)
         chans = []
         for channel in channels:
             chans.append(Chan(channel.tvg_id,channel.tvg_name,channel.logo,channel.sort,\
