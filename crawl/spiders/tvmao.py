@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 import requests, time, datetime,re
-from utils.general import headers
+# from utils.general import headers
 from bs4 import BeautifulSoup as bs
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9",
@@ -227,7 +227,7 @@ def get_epgs_tvmao2(channel,channel_id,dt,func_arg):
                    'starttime': starttime,
                    'endtime': None,
                    'title': title,
-                   'desc': desc,
+                   'desc': desc if desc is not None else '',
                    'program_date': dt,
                    }
             epgs.append(epg)
@@ -300,3 +300,13 @@ def get_channels_tvmao():
         print('%s,%s,id:%s,共有频道：%s'%(n,sort_name,sorts[sort_name],len(channel_trs)))
 
     return channels
+
+
+if __name__ == '__main__':
+    dt = datetime.date.today()
+    class Channel:
+        pass
+    channel = Channel()
+    channel.id = 94
+    ret = get_epgs_tvmao(channel, 'SITV14', dt, 0)
+    print(ret)

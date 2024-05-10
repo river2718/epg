@@ -18,7 +18,7 @@ def log(msg,level = 1): #写日志 1正常 2错误
 '''
 def get_html_info(need_date):
     # channels = Channel.get_need_channels(Channel,'all')
-    channels = Channel.objects.all()
+    channels = Channel.objects.all().order_by('num')
     channels = [channels,channels.values_list('id')]
     epgs = Epg.get_epgs(channels[1], need_date)
     epg_no = epgs.count()

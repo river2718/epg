@@ -3,7 +3,7 @@
 
 from crawl.spiders.cctv import get_epgs_cctv,get_channels_cctv
 from crawl.spiders.tbc import get_epgs_tbc,get_channels_tbc
-from crawl.spiders.tvmao import get_epgs_tvmao2,get_channels_tvmao
+from crawl.spiders.tvmao import get_epgs_tvmao,get_channels_tvmao
 from crawl.spiders.zhongshu import get_epgs_zhongshu,get_channels_zhongshu
 from crawl.spiders.cabletv import get_epgs_cabletv,get_channels_cabletv
 from crawl.spiders.g4tv import get_epgs_4gtv,get_channels_4gtv
@@ -23,7 +23,7 @@ from utils.general import chuanliu_Authorization
 from crawl.spiders.sdtv import get_epgs_sdtv,get_channels_sdtv
 from crawl.spiders.myxml import get_epgs_xml
 epg_funcs = {
-                'tvmao':get_epgs_tvmao2,
+                'tvmao':get_epgs_tvmao,
                 'tbc':get_epgs_tbc,
                 'cctv':get_epgs_cctv,
                 'zhongshu':get_epgs_zhongshu,

@@ -28,6 +28,28 @@ def index(request):
            'root_dir':root_dir,
            'n':0,}
     return render(request,"index.html",context = ret)
+
+def live(request):
+    crawl_days = crawl_info['gen_xml_days']
+    start_date = datetime.datetime.now().strftime(u'%Y{y}%m{m}%d{d}').format(y='年', m='月', d='日')
+    start_date_no = datetime.datetime.now().strftime(u'%Y%m%d')
+    end_date_date = datetime.datetime.now() + datetime.timedelta(days=crawl_days - 1)
+    end_date = (end_date_date).strftime(u'%Y{y}%m{m}%d{d}').format(y='年', m='月', d='日')
+    info = get_html_info(end_date_date.date())
+    channel_no = info['channels'].count()
+    epg_no = info['epg_no']
+
+    ret = {'channel_no':channel_no,
+           'crawl_day':crawl_days,
+           'epg_no':epg_no,
+           'start_date':start_date,
+           'start_date_no':start_date_no,
+           'end_date':end_date,
+           'channels':info['channels'],
+           'root_dir':root_dir,
+           'n':0,}
+    return render(request,"live.html",context = ret)
+
 def download(requests,title):
     file = open(os.path.join(root_dir,title),'rb')
     response = FileResponse(file)

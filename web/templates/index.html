@@ -54,7 +54,7 @@
             {% for channel in channels %}
             <tr>
                 <th>{{ forloop.counter }}</th>
-                <td><a href="{{ channel.logo }}"><img class="lazy" data-original="{{ channel.logo }}" alt="{{ channel.tvg_name }}" height="30"></a></td>
+                <td><a href="{{ channel.logo_file.url }}"><img class="lazy" data-original="{{ channel.logo }}" alt="{{ channel.tvg_name }}" height="30"></a></td>
                 <td><a href="/api/web/?ch={{ channel.tvg_name }}&date={{ start_date_no }}">{{ channel.name }}</a></td>
                 <td>{{ channel.tvg_id }}</td>
                 <td>{{ channel.tvg_name }}</td>
